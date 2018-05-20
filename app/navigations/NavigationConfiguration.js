@@ -1,24 +1,30 @@
 import React from 'react';
-import { TabNavigator, StackNavigator } from 'react-navigation';
+import { TabNavigator, TabBarBottom, StackNavigator } from 'react-navigation';
 
 import ArticleScreen from '../components/articles/ArticleScreen';
 import ArticleDetailScreen from '../components/articles/ArticleDetailScreen';
 import BookScreen from '../components/books/BookScreen';
+import BookDetailScreen from '../components/books/BookDetailScreen';
+
+import Color from '../utils/Color';
 
 const navigatorTabArticle = StackNavigator({
   ArticleScreen: {
     screen: ArticleScreen,
-    navigationOptions: {
-      tabBarVisible: true,
-    },
   },
   ArticleDetailScreen: {
     screen: ArticleDetailScreen,
-    navigationOptions: {
-      tabBarVisible: true,
-    },
   },
 });
+
+const navigatorTabBook = StackNavigator({
+  BookScreen: {
+    screen: BookScreen,
+  },
+  BookDetailScreen: {
+    screen: BookDetailScreen,
+  }
+})
 
 const routeConfiguration = {
   TabArticle: {
@@ -28,7 +34,7 @@ const routeConfiguration = {
     },
   },
   TabBook: {
-    screen: BookScreen,
+    screen: navigatorTabBook,
     navigationOptions: {
       tabBarLabel: 'Books',
     },
@@ -37,13 +43,14 @@ const routeConfiguration = {
 
 const tabBarConfiguration = {
   initialRouteName: 'TabArticle',
+  tabBarComponent: TabBarBottom,
   tabBarPosition: 'bottom',
   lazy: true,
   tabBarOptions: {
-    activeTintColor: 'red',
-    inactiveTintColor: 'grey',
-    style: {backgroundColor: 'grey'},
-    labelStyle: {fontSize: 12},
+    activeTintColor: Color.WHITE,
+    inactiveTintColor: Color.DARK_CYAN,
+    style: {backgroundColor: Color.EASTERN_BLUE, paddingBottom: 13},
+    labelStyle: {fontSize: 14},
   },
   swipeEnabled: true,
   animationEnabled: false,
