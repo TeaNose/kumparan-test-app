@@ -1,5 +1,8 @@
 import React from 'react';
-import { TabNavigator, TabBarBottom, StackNavigator } from 'react-navigation';
+import { BackHandler, StyleSheet, Image, StatusBar, View } from 'react-native';
+import { TabNavigator, TabBarBottom, StackNavigator, addNavigationHelpers } from 'react-navigation';
+import { createReactNavigationReduxMiddleware, createReduxBoundAddListener } from 'react-navigation-redux-helpers';
+import { connect } from 'react-redux';
 
 import ArticleScreen from '../components/articles/ArticleScreen';
 import ArticleDetailScreen from '../components/articles/ArticleDetailScreen';
@@ -57,3 +60,37 @@ const tabBarConfiguration = {
 };
 
 export const MainNavigator = TabNavigator(routeConfiguration, tabBarConfiguration);
+
+export const NavMiddleware = createReactNavigationReduxMiddleware(
+  'root',
+  state => state.navigatorTab,
+);
+const addListener = createReduxBoundAddListener('root');
+
+class AppWithNavigationState extends React.Component {
+  render() {
+    const { dispatch, navigatorTab } = this.props;
+    const navigation = addNavigationHelpers({
+      dispatch,
+      state: navigatorTab,
+      addListener,
+    });
+
+    return (
+      <View >
+        <StatusBar
+          backgroundColor="#d12b1f"
+          barStyle="light-content"
+        />
+        <MainNavigator navigation={navigation} />
+      </View>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  navigatorTab: state.navigatorTab,
+});
+
+
+export default connect(mapStateToProps)(AppWithNavigationState);
