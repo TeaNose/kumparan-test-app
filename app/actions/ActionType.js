@@ -1,0 +1,7 @@
+export const REQUESTING_ARTICLE_DATAS = 0;
+export const REQUEST_ARTICLE_DATA_FAILED = -99;
+export const REQUEST_ARTICLE_DATA_SUCCESS = 1;
+
+export const REQUESTING_BOOK_DATAS = 0;
+export const REQUEST_BOOK_DATA_FAILED = -99;
+export const REQUEST_BOOK_DATA_SUCCESS = 1;
