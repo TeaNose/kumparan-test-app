@@ -4,19 +4,19 @@ import {
   REQUEST_BOOK_DATA_SUCCESS,
 } from './ActionType';
 
-const requestingBookDatas = () => {
+const requestingBookDatas = () => ({
   type: REQUESTING_BOOK_DATAS
-}
+})
 
-const requestBookDataFailed = (error) => {
+const requestBookDataFailed = (error) => ({
   type: REQUEST_BOOK_DATA_FAILED,
   error
-}
+})
 
-const requestBookDataSuccess = (data) => {
+const requestBookDataSuccess = (data) => ({
   type: REQUEST_BOOK_DATA_SUCCESS,
   data
-}
+})
 
 export const getBookData = () => {
   console.log('Dispatching request book data');

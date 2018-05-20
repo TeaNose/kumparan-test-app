@@ -7,19 +7,19 @@ import {
   REQUEST_ARTICLE_DATA_SUCCESS,
 } from './ActionType';
 
-const requestingArticleDatas = () => {
+const requestingArticleDatas = () => ({
   type: REQUESTING_ARTICLE_DATAS
-}
+})
 
-const requestArticleDataFailed = (error) => {
+const requestArticleDataFailed = (error) => ({
   type: REQUEST_ARTICLE_DATA_FAILED,
   error
-}
+})
 
-const requestArticleDataSuccess = (data) => {
+const requestArticleDataSuccess = (data) => ({
   type: REQUEST_ARTICLE_DATA_SUCCESS,
   data
-}
+})
 
 export const getArticleData = () => (dispatch) => {
   dispatch(requestingArticleDatas())
@@ -36,13 +36,13 @@ export const getArticleData = () => (dispatch) => {
     console.log('Response: '+JSON.stringify(response.data.response.docs));
     const result = response.data;
     if (result.status === 'OK') {
-      // dispatch(requestArticleDataSuccess(result.response.docs));
+      dispatch(requestArticleDataSuccess(result.response.docs));
     } else {
       console.log('Get article datas fail')
     }
   })
   .catch(error => {
     console.log(`Error di getArticleData: ${error}`)
-    // dispatch(requestArticleDataFailed(error));
+    dispatch(requestArticleDataFailed(error));
   });
 }
