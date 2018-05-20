@@ -14,10 +14,8 @@ import {
   CardItem,
   Container,
   Content,
-  Footer,
   Input,
   Item,
-  Left,
   Right,
   Header,
   Text,
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isRequestArticleData: state.article.isRequestArticleData,
   articleData: state.article.articleData,
   errorMessageArticle: state.article.errorMessageArticle,
@@ -134,7 +132,6 @@ class ArticleScreen extends Component {
               <Input
                 placeholder="Search Article"
                 onSubmitEditing={() => console.log('HAHHAHAHA')}
-                style={{width: Dimensions.get('window') - 10}}
               />
             </Item>
           </Body>
