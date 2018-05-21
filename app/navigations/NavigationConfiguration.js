@@ -47,7 +47,7 @@ const tabBarConfiguration = {
   initialRouteName: 'TabArticle',
   tabBarComponent: TabBarBottom,
   tabBarPosition: 'bottom',
-  lazy: true,
+  lazy: false,
   tabBarOptions: {
     activeTintColor: Color.WHITE,
     inactiveTintColor: Color.DARK_CYAN,

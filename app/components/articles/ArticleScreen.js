@@ -21,6 +21,7 @@ import {
   Spinner,
   Text,
 } from 'native-base';
+import SplashScreen from 'react-native-splash-screen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { getArticleData } from '../../actions/ArticleAction';
@@ -104,6 +105,7 @@ class ArticleScreen extends Component {
 
   componentDidMount() {
     this.props.dispatch(getArticleData(this.state.query, 'newest'));
+    SplashScreen.hide();
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
