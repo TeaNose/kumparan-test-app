@@ -21,11 +21,12 @@ const requestArticleDataSuccess = (data) => ({
   data
 })
 
-export const getArticleData = () => (dispatch) => {
+export const getArticleData = (query, sort) => (dispatch) => {
   dispatch(requestingArticleDatas())
+  console.log('Sorting method: '+sort)
   return axios({
     method: 'GET',
-    url: getArticleDataApi(),
+    url: getArticleDataApi(query),
     headers: {
       'api-key': '20460f0bde924f0698d253f346b7dfe9',
     },

@@ -14,10 +14,11 @@ import {
   CardItem,
   Container,
   Content,
+  Header,
   Input,
   Item,
   Right,
-  Header,
+  Spinner,
   Text,
 } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -57,40 +58,51 @@ const mapStateToProps = (state) => ({
   errorMessageArticle: state.article.errorMessageArticle,
 });
 
-const dataDummy = [
-  {
-    web_url: 'https://www.nytimes.com/1990/10/19/business/textron-posts-gain-in-profits.html',
-    snippet: 'LEAD: Textron Inc. reported today that its third-quarter earnings increased nearly 12 percent, largely on improvements in its aerospace business.'
-  },
-  {
-    web_url: 'https://www.nytimes.com/1990/10/19/business/textron-posts-gain-in-profits.html',
-    snippet: 'LEAD: Textron Inc. reported today that its third-quarter earnings increased nearly 12 percent, largely on improvements in its aerospace business.'
-  }
-]
-
 class ArticleScreen extends Component {
   static navigationOptions = () => ({
     header: false
   });
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       isSortingModalVisible: false,
+      isRequestArticleData: this.props.isRequestArticleData,
+      articleData: this.props.articleData,
+      errorMessageArticle: this.props.errorMessageArticle,
+      query: '',
+      sort: 'newest',
     }
   }
 
   componentDidMount() {
     console.log('Component Did Mount');
-    this.props.dispatch(getArticleData());
+    this.props.dispatch(getArticleData(this.state.query, this.state.sort));
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    console.log("nextProps: "+JSON.stringify(nextProps.isRequestArticleData) + "; " + prevState.isRequestArticleData);
+    if (nextProps.isRequestArticleData !== prevState.isRequestArticleData) {
+      return {
+        isRequestArticleData: nextProps.isRequestArticleData,
+        articleData: nextProps.articleData,
+        errorMessageArticle: nextProps.errorMessageArticle,
+      };
+    }
+    return null;
   }
 
   renderRow(rowData) {
     return (
       <Card>
-        <CardItem button onPress={() => this.props.navigation.navigate('ArticleDetailScreen')}>
+        <CardItem button onPress={() => this.props.navigation.navigate('ArticleDetailScreen', {uri: rowData.web_url})}>
           <Body>
-            <Text>{rowData.snippet}</Text>
+            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>{rowData.headline.main}</Text>
+            {
+              rowData.snippet ?
+              <Text style={{fontSize: 14}}>{rowData.headline.main}</Text> : null
+            }
+
           </Body>
         </CardItem>
       </Card>
@@ -109,9 +121,31 @@ class ArticleScreen extends Component {
             <View style={styles.modalContainer}>
               <TouchableWithoutFeedback onPress={() => {}}>
                 <View style={{height: 90, width: 200, backgroundColor: Color.WHITE, borderRadius: 3}}>
-                  <Text onPress={() => this.setState({isSortingModalVisible: false})} style={{marginTop: 10, marginBottom: 10, marginLeft: 10}}> Newest - Oldest </Text>
+                  <Text
+                    onPress={() => {
+                      this.setState({
+                        sort: 'newest',
+                        isSortingModalVisible: false
+                      });
+                      this.props.dispatch(getArticleData(this.state.query, this.state.sort));
+                    }}
+                    style={{marginTop: 10, marginBottom: 10, marginLeft: 10}}
+                  >
+                    Newest - Oldest
+                  </Text>
                   <View style={{backgroundColor: Color.EASTERN_BLUE, height: 2}} />
-                  <Text onPress={() => this.setState({isSortingModalVisible: false})} style={{marginTop: 10, marginBottom: 10, marginLeft: 10}}> Oldest - Newest </Text>
+                  <Text
+                    onPress={() => {
+                      this.setState({
+                        sort: 'oldest',
+                        isSortingModalVisible: false
+                      });
+                      this.props.dispatch(getArticleData(this.state.query, this.state.sort));
+                    }}
+                    style={{marginTop: 10, marginBottom: 10, marginLeft: 10}}
+                  >
+                    Oldest - Newest
+                  </Text>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -131,7 +165,8 @@ class ArticleScreen extends Component {
             <Item style={{height: 18}} >
               <Input
                 placeholder="Search Article"
-                onSubmitEditing={() => console.log('HAHHAHAHA')}
+                onSubmitEditing={() => this.props.dispatch(getArticleData(this.state.query))}
+                onChangeText={(text) => this.setState({query: text})}
               />
             </Item>
           </Body>
@@ -142,11 +177,14 @@ class ArticleScreen extends Component {
           </Right>
         </Header>
         <Content>
-          <Card
-            dataArray={dataDummy}
-            renderRow={(data) => this.renderRow(data)}
-          />
-
+          {
+            this.state.isRequestArticleData ?
+            <Spinner color='green' /> :
+            <Card
+              dataArray={this.state.articleData}
+              renderRow={(data) => this.renderRow(data)}
+            />
+          }
         </Content>
       </Container>
     );

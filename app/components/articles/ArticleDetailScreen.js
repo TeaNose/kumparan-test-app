@@ -1,19 +1,37 @@
 import React, { Component } from 'react';
 import {
+  WebView,
   View,
   Text,
 } from 'react-native';
+import {
+  Spinner,
+} from 'native-base';
 
 export default class ArticleDetailScreen extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    console.log('Props nav: '+ JSON.stringify(this.props.navigation.state))
+  }
+
   static navigationOptions = {
-    tabBarVisible: false //this will hide the TabBar navigator's header (LoggedIn_TabNavigator)
+    title: 'Detail Article',
+    tabBarVisible: false,
   }
 
   render() {
     return (
-      <View>
-        <Text>This is Detail Article Screen</Text>
-      </View>
+      <WebView
+        source={{uri: this.props.navigation.state.params.uri}}
+        renderLoading={() => (
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <Spinner color='green' />
+          </View>
+        )}
+      />
     );
   };
 }
