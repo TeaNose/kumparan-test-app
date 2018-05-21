@@ -14,6 +14,7 @@ const navigatorTabArticle = StackNavigator({
   },
   ArticleDetailScreen: {
     screen: ArticleDetailScreen,
+    tabBarVisible: false,
   },
 });
 
@@ -23,6 +24,7 @@ const navigatorTabBook = StackNavigator({
   },
   BookDetailScreen: {
     screen: BookDetailScreen,
+    tabBarVisible: false,
   }
 })
 

@@ -7,26 +7,25 @@ import {
   REQUEST_ARTICLE_DATA_SUCCESS,
 } from './ActionType';
 
-const requestingArticleDatas = () => ({
+export const requestingArticleDatas = () => ({
   type: REQUESTING_ARTICLE_DATAS
 })
 
-const requestArticleDataFailed = (error) => ({
+export const requestArticleDataFailed = (error) => ({
   type: REQUEST_ARTICLE_DATA_FAILED,
   error
 })
 
-const requestArticleDataSuccess = (data) => ({
+export const requestArticleDataSuccess = (data) => ({
   type: REQUEST_ARTICLE_DATA_SUCCESS,
   data
 })
 
 export const getArticleData = (query, sort) => (dispatch) => {
   dispatch(requestingArticleDatas())
-  console.log('Sorting method: '+sort)
   return axios({
     method: 'GET',
-    url: getArticleDataApi(query),
+    url: getArticleDataApi(query, sort),
     headers: {
       'api-key': '20460f0bde924f0698d253f346b7dfe9',
     },
@@ -34,7 +33,6 @@ export const getArticleData = (query, sort) => (dispatch) => {
     timeout: 10000,
   })
   .then(response => {
-    console.log('Response: '+JSON.stringify(response.data.response.docs));
     const result = response.data;
     if (result.status === 'OK') {
       dispatch(requestArticleDataSuccess(result.response.docs));
@@ -43,7 +41,7 @@ export const getArticleData = (query, sort) => (dispatch) => {
     }
   })
   .catch(error => {
-    console.log(`Error di getArticleData: ${error}`)
+    console.log(`Error at getArticleData: ${error}`)
     dispatch(requestArticleDataFailed(error));
   });
 }

@@ -1,36 +1,55 @@
 import React, { Component } from 'react';
 import {
-  WebView,
-  View,
+  Dimensions,
+  StyleSheet,
   Text,
+  View,
+  WebView,
 } from 'react-native';
 import {
   Spinner,
 } from 'native-base';
+import Color from '../../utils/Color';
+import StackHeader from '../../modules/StackHeader';
+
+const styles = StyleSheet.create({
+  loaderContainer: {
+    flex: 1,
+    height: Dimensions.get('window').height - 150,
+    justifyContent: 'center',
+  },
+  headerContainer: {
+    backgroundColor: Color.EASTERN_BLUE,
+    height: 50,
+  }
+});
 
 export default class ArticleDetailScreen extends Component {
   constructor(props) {
     super(props);
   }
 
-  componentDidMount() {
-    console.log('Props nav: '+ JSON.stringify(this.props.navigation.state))
-  }
+  static navigationOptions = ({navigation}) => ({
+    header: <StackHeader
+              title='Article Detail'
+              onPressLeft= {() => { navigation.goBack() } }
+            />
+  })
 
-  static navigationOptions = {
-    title: 'Detail Article',
-    tabBarVisible: false,
+  renderLoading() {
+    return (
+      <View style={styles.loaderContainer}>
+        <Spinner color={Color.EASTERN_BLUE} />
+      </View>
+    )
   }
 
   render() {
     return (
       <WebView
         source={{uri: this.props.navigation.state.params.uri}}
-        renderLoading={() => (
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <Spinner color='green' />
-          </View>
-        )}
+        renderLoading={() => this.renderLoading()}
+        startInLoadingState={true}
       />
     );
   };

@@ -48,8 +48,36 @@ const styles = StyleSheet.create({
     backgroundColor:'rgba(52,52,52,0.5)',
     flexDirection:'column',
     alignItems:'center',
-    justifyContent:'center'
-  }
+    justifyContent:'center',
+  },
+  headLineFont: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  descFont: {
+    fontSize: 14,
+  },
+  modalBox: {
+    height: 90,
+    width: 200,
+    backgroundColor: Color.WHITE,
+    borderRadius: 3,
+  },
+  sortFont: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10,
+  },
+  sortSeparator: {
+    backgroundColor: Color.EASTERN_BLUE,
+    height: 2,
+  },
+  loaderContainer: {
+    flex: 1,
+    height: Dimensions.get('window').height - 150,
+    justifyContent: 'center',
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -71,17 +99,14 @@ class ArticleScreen extends Component {
       articleData: this.props.articleData,
       errorMessageArticle: this.props.errorMessageArticle,
       query: '',
-      sort: 'newest',
     }
   }
 
   componentDidMount() {
-    console.log('Component Did Mount');
-    this.props.dispatch(getArticleData(this.state.query, this.state.sort));
+    this.props.dispatch(getArticleData(this.state.query, 'newest'));
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log("nextProps: "+JSON.stringify(nextProps.isRequestArticleData) + "; " + prevState.isRequestArticleData);
     if (nextProps.isRequestArticleData !== prevState.isRequestArticleData) {
       return {
         isRequestArticleData: nextProps.isRequestArticleData,
@@ -97,10 +122,10 @@ class ArticleScreen extends Component {
       <Card>
         <CardItem button onPress={() => this.props.navigation.navigate('ArticleDetailScreen', {uri: rowData.web_url})}>
           <Body>
-            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>{rowData.headline.main}</Text>
+            <Text style={styles.headLineFont}>{rowData.headline.main}</Text>
             {
               rowData.snippet ?
-              <Text style={{fontSize: 14}}>{rowData.headline.main}</Text> : null
+              <Text style={styles.descFont}>{rowData.headline.main}</Text> : null
             }
 
           </Body>
@@ -120,29 +145,27 @@ class ArticleScreen extends Component {
           <TouchableWithoutFeedback onPress={() => this.setState({isSortingModalVisible: false})}>
             <View style={styles.modalContainer}>
               <TouchableWithoutFeedback onPress={() => {}}>
-                <View style={{height: 90, width: 200, backgroundColor: Color.WHITE, borderRadius: 3}}>
+                <View style={styles.modalBox}>
                   <Text
                     onPress={() => {
                       this.setState({
-                        sort: 'newest',
                         isSortingModalVisible: false
                       });
-                      this.props.dispatch(getArticleData(this.state.query, this.state.sort));
+                      this.props.dispatch(getArticleData(this.state.query, 'newest'));
                     }}
-                    style={{marginTop: 10, marginBottom: 10, marginLeft: 10}}
+                    style={styles.sortFont}
                   >
                     Newest - Oldest
                   </Text>
-                  <View style={{backgroundColor: Color.EASTERN_BLUE, height: 2}} />
+                  <View style={styles.sortSeparator} />
                   <Text
                     onPress={() => {
                       this.setState({
-                        sort: 'oldest',
                         isSortingModalVisible: false
                       });
-                      this.props.dispatch(getArticleData(this.state.query, this.state.sort));
+                      this.props.dispatch(getArticleData(this.state.query, 'oldest'));
                     }}
-                    style={{marginTop: 10, marginBottom: 10, marginLeft: 10}}
+                    style={styles.sortFont}
                   >
                     Oldest - Newest
                   </Text>
@@ -160,12 +183,12 @@ class ArticleScreen extends Component {
         {
           this.state.isSortingModalVisible ? this.renderSortingModal() : null
         }
-        <Header style={styles.header}>
+        <Header style={styles.header} androidStatusBarColor={Color.EASTERN_BLUE}>
           <Body style={styles.headerBody}>
             <Item style={{height: 18}} >
               <Input
                 placeholder="Search Article"
-                onSubmitEditing={() => this.props.dispatch(getArticleData(this.state.query))}
+                onSubmitEditing={() => this.props.dispatch(getArticleData(this.state.query, 'newest'))}
                 onChangeText={(text) => this.setState({query: text})}
               />
             </Item>
@@ -179,7 +202,9 @@ class ArticleScreen extends Component {
         <Content>
           {
             this.state.isRequestArticleData ?
-            <Spinner color='green' /> :
+            <View style={styles.loaderContainer}>
+              <Spinner color={Color.EASTERN_BLUE} />
+            </View>:
             <Card
               dataArray={this.state.articleData}
               renderRow={(data) => this.renderRow(data)}
